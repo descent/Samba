@@ -1,0 +1,12 @@
+--- ./source3/wscript.bak	2016-12-16 10:44:01.503309944 +0800
++++ ./source3/wscript	2016-12-16 10:45:28.066639865 +0800
+@@ -457,8 +457,7 @@
+     conf.CHECK_CODE('struct statfs fsd; fsid_t fsid = fsd.f_fsid; return statfs(".", &fsd);',
+                     'HAVE_STATFS_F_FSID',
+                     msg="vfs_fileid: checking for statfs() and struct statfs.f_fsid",
+-                    headers='sys/types.h sys/statfs.h',
+-                    execute=True)
++                    headers='sys/types.h sys/statfs.h')
+ 
+     if conf.CONFIG_SET('HAVE_FALLOCATE'):
+         conf.CHECK_CODE('''

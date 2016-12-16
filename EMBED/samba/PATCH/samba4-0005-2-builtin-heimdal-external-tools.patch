@@ -1,0 +1,11 @@
+--- ./source4/heimdal_build/wscript_configure.bak	2016-12-16 11:09:02.323250793 +0800
++++ ./source4/heimdal_build/wscript_configure	2016-12-16 11:09:55.979915345 +0800
+@@ -162,6 +162,8 @@
+ conf.define('HAVE_KRB5_PRINCIPAL_GET_NUM_COMP', 1)
+ conf.define('HAVE_GSSAPI_GSSAPI_SPNEGO_H', 1)
+ conf.define('HAVE_FLAGS_IN_KRB5_CREDS', 1)
++conf.define('USING_SYSTEM_ASN1_COMPILE', 1)
++conf.define('USING_SYSTEM_COMPILE_ET', 1)
+ 
+ heimdal_includedirs = []
+ heimdal_libdirs = []

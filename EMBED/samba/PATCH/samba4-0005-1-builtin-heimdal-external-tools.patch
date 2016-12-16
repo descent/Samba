@@ -1,0 +1,21 @@
+--- ./source4/heimdal_build/wscript_build.bak	2016-12-16 11:05:21.733259486 +0800
++++ ./source4/heimdal_build/wscript_build	2016-12-16 11:07:02.519922182 +0800
+@@ -925,7 +925,8 @@
+         install=False
+     )
+     bld.env['ASN1_COMPILE'] = os.path.join(bld.env['BUILD_DIRECTORY'], 'asn1_compile')
+-
++else:
++    bld.env['ASN1_COMPILE'] = 'asn1_compile'
+ 
+ if not bld.CONFIG_SET('USING_SYSTEM_COMPILE_ET'):
+     HEIMDAL_BINARY('compile_et',
+@@ -939,6 +940,8 @@
+         install=False
+         )
+     bld.env['COMPILE_ET'] = os.path.join(bld.env['BUILD_DIRECTORY'], 'compile_et')
++else:
++    bld.env['COMPILE_ET'] = 'compile_et'
+ 
+ HEIMDAL_BINARY('samba4kinit',
+     'kuser/kinit.c',
