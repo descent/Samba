@@ -22,6 +22,36 @@ if [ ! -d "$OBJ" ]; then
 	mkdir $OBJ
 fi
 
+echo "************ Python-2.7.12.tgz  ***********************"
+if [ ! -d $TARGET/Python-2.7.12 ]; then
+    cd $PACKAGE
+    tar xvf "Python-2.7.12.tgz" -C $TARGET
+
+    cd $TARGET/Python-2.7.12/
+
+    # create a file was called "python_for_build"
+    touch ${PWD}/python_for_build
+    chmod 777 ${PWD}/python_for_build
+
+    CC=arm-linux-gnueabihf-gcc-4.8.5 \
+       ./configure \
+       --host=armeb-linux \
+       --build=i686-linux-gnu \
+       --prefix=$OBJ/ \
+       --disable-ipv6 \
+       --enable-shared \
+       ac_cv_file__dev_ptmx=yes \
+       ac_cv_file__dev_ptc=no \
+       ac_cv_have_long_long_format=yes \
+       --enable-unicode \
+       --with-pydebug \
+       --without-pymalloc \
+       PYTHON_FOR_BUILD=${PWD}/python_for_build \
+
+    make
+    make install
+fi
+
 echo "************ samba-4.1.5.tar.gz ***********************"
 if [ ! -d $SAMBA ]; then
     cd $PACKAGE
@@ -50,20 +80,20 @@ if [ ! -d $SAMBA ]; then
 
     # Create a ldb_version.h and patch it
     mkdir $SAMBA/source3/include/autoconf
-    cp $PATCH/ldb_version.h   ./source3/include/autoconf/
+    cp $PATCH/ldb_version.h ./source3/include/autoconf/
 
     export PATH=/home/freeman/test/1/Python/X86/python/OBJ/bin:$SAMBA/bin/default/source4/heimdal_build/:$PATH
-    export LD_LIBRARY_PATH=/home/freeman/test/1/Python/X86/python/OBJ/lib:/home/freeman/test/1/Python/EMBED/python/OBJ/lib/:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=/home/freeman/test/1/Python/X86/python/OBJ/lib:$OBJ/lib/:$LD_LIBRARY_PATH
     CC=arm-linux-gnueabihf-gcc-4.8.5 \
         AR=arm-linux-gnueabihf-ar \
         CPP=arm-linux-gnueabihf-cpp \
         RANLIB=arm-linux-gnueabihf-gcc-ranlib  \
         PYTHON=/home/freeman/test/1/Python/X86/python/OBJ/bin/python \
-        CFLAGS="-I/home/freeman/test/1/Python/EMBED/python/OBJ/include/python2.7 -I$SAMBA/lib/talloc/ -I$SAMBA/lib/tevent -I$SAMBA/lib/tdb/include -I$SAMBA/lib/ldb/include/ -I$SAMBA/lib/ldb/ -I$SAMBA/source3/include/autoconf/" \
-        LIBDIR="-L/home/freeman/test/1/Python/EMBED/python/OBJ/lib/" \
+        CFLAGS="-I$OBJ/include/python2.7 -I$SAMBA/lib/talloc/ -I$SAMBA/lib/tevent -I$SAMBA/lib/tdb/include -I$SAMBA/lib/ldb/include/ -I$SAMBA/lib/ldb/ -I$SAMBA/source3/include/autoconf/" \
+        LIBDIR="-L$OBJ/lib/" \
         PYTHON_CONFIG="/home/freeman/test/1/Python/X86/python/OBJ/bin/python-config" \
-        python_LDFLAGS="-L/home/freeman/test/1/Python/EMBED/python/OBJ/lib/ -lpython2.7" \
-        python_LIBDIR="/home/freeman/test/1/Python/EMBED/python/OBJ/lib/" \
+        python_LDFLAGS="-L$OBJ/lib/ -lpython2.7" \
+        python_LIBDIR="$OBJ/lib/" \
         ./buildtools/bin/waf \
         configure \
         --prefix=$OBJ/ \
