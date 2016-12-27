@@ -104,16 +104,18 @@ if [ ! -d $SAMBA ]; then
         --cross-compile \
         --cross-answers=arm.txt \
         --hostcc=gcc \
-        --disable-rpath \
-        --disable-rpath-install \
-        --disable-iprint \
+        --without-ads \
         --without-pam \
-        --without-dmapi \
         --without-ldap \
+        --without-utmp \
         --without-cluster-support \
+        --without-dmapi \
         --enable-debug \
         --enable-selftest \
+        --disable-iprint \
         --disable-gnutls \
+        --disable-rpath \
+        --disable-rpath-install \
         --builtin-libraries=talloc,pytalloc-util \
         --bundled-libraries=talloc,pytalloc-util,tdb,tevent,ldb \
 
