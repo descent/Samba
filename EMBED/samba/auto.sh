@@ -106,6 +106,7 @@ if [ ! -d $SAMBA ]; then
         --hostcc=gcc \
         --without-ads \
         --without-pam \
+        --without-pam_smbpass \
         --without-ldap \
         --without-utmp \
         --without-cluster-support \
@@ -113,10 +114,10 @@ if [ ! -d $SAMBA ]; then
         --without-winbind \
         --without-dnsupdate \
         --without-dmapi \
-        --disable-cups \
-        --disable-avahi \
         --enable-debug \
         --enable-selftest \
+        --disable-cups \
+        --disable-avahi \
         --disable-iprint \
         --disable-gnutls \
         --disable-rpath \
