@@ -113,6 +113,8 @@ if [ ! -d $SAMBA ]; then
         --without-winbind \
         --without-dnsupdate \
         --without-dmapi \
+        --disable-cups \
+        --disable-avahi \
         --enable-debug \
         --enable-selftest \
         --disable-iprint \
