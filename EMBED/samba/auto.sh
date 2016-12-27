@@ -109,6 +109,9 @@ if [ ! -d $SAMBA ]; then
         --without-ldap \
         --without-utmp \
         --without-cluster-support \
+        --without-acl-support \
+        --without-winbind \
+        --without-dnsupdate \
         --without-dmapi \
         --enable-debug \
         --enable-selftest \
