@@ -123,7 +123,9 @@ if [ ! -d $SAMBA ]; then
         --disable-rpath-install \
         --builtin-libraries=talloc,pytalloc-util \
         --bundled-libraries=talloc,pytalloc-util,tdb,tevent,ldb \
-
+        samba_cv_CC_NEGATIVE_ENUM_VALUES=yes \
+        libreplace_cv_HAVE_GETADDRINFO=no \
+        ac_cv_file__proc_sys_kernel_core_pattern=yes \
     make
     make install
 fi
