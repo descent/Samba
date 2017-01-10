@@ -78,6 +78,13 @@ if [ ! -d $SAMBA ]; then
     patch -Np1 -i $PATCH/samba4-0005-1-builtin-heimdal-external-tools.patch
     patch -Np1 -i $PATCH/samba4-0005-2-builtin-heimdal-external-tools.patch
 
+    # [PATCH] s3: Allow unprivileged processes to read registry.tdb
+    # http://markmail.org/thread/u6pafcc2m2i5riyj
+    patch -Np1 -i $PATCH/reg_backend_db.c.patch
+    patch -Np1 -i $PATCH/reg_backend_db.h.patch
+    patch -Np1 -i $PATCH/reg_init_basic.c.patch
+    patch -Np1 -i $PATCH/reg_init_smbconf.c.patch
+
     # Patch file for Embedded system
     # Copy from samba4 which compile on X86
     mkdir ./bin/default/source4/heimdal_build -p

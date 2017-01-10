@@ -1,0 +1,10 @@
+--- ./source3/registry/reg_backend_db.h.bak	2017-01-10 19:59:03.793565828 +0800
++++ ./source3/registry/reg_backend_db.h	2017-01-10 19:58:28.857223898 +0800
+@@ -28,6 +28,7 @@
+ WERROR regdb_init(void);
+ WERROR regdb_open( void );
+ int regdb_close( void );
++bool regdb_is_readonly (void);
+ WERROR regdb_transaction_start(void);
+ WERROR regdb_transaction_commit(void);
+ WERROR regdb_transaction_cancel(void);

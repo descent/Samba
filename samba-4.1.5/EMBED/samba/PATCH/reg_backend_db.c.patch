@@ -1,0 +1,70 @@
+--- ./source3/registry/reg_backend_db.c.bak	2017-01-10 19:14:02.086993056 +0800
++++ ./source3/registry/reg_backend_db.c	2017-01-10 19:58:01.426955206 +0800
+@@ -41,6 +41,7 @@
+ #define REGDB_VERSION_KEYNAME "INFO/version"
+ 
+ static struct db_context *regdb = NULL;
++static int regdb_readonly = 0;
+ static int regdb_refcount;
+ 
+ static bool regdb_key_exists(struct db_context *db, const char *key);
+@@ -731,11 +732,22 @@
+ 	}
+ 
+ 	regdb = db_open(NULL, state_path("registry.tdb"), 0,
+-			REG_TDB_FLAGS, O_RDWR, 0600,
++			REG_TDB_FLAGS, O_RDWR, 0644,
+ 			DBWRAP_LOCK_ORDER_1);
++
++	/* If we can't open due to permission, try opening readonly */
++        if (!regdb && errno == EACCES) {
++            regdb = db_open(NULL, state_path("registry.tdb"), 0,
++              REG_TDB_FLAGS, O_RDONLY, 0644,
++              DBWRAP_LOCK_ORDER_1);
++
++            if (regdb)
++                regdb_readonly = 1;
++        }
++
+ 	if (!regdb) {
+ 		regdb = db_open(NULL, state_path("registry.tdb"), 0,
+-				REG_TDB_FLAGS, O_RDWR|O_CREAT, 0600,
++				REG_TDB_FLAGS, O_RDWR|O_CREAT, 0644,
+ 				DBWRAP_LOCK_ORDER_1);
+ 		if (!regdb) {
+ 			werr = ntstatus_to_werror(map_nt_error_from_unix(errno));
+@@ -794,6 +806,13 @@
+ 		return WERR_CAN_NOT_COMPLETE;
+ 	}
+ 
++        /* Readonly access cannot upgrade the file */
++        if (regdb_readonly) {
++            DEBUG(1,("regdb_init: Failed to open registry %s (invalid version %d)\n",
++                  state_path("registry.tdb"), vers_id));
++            return WERR_CAN_NOT_COMPLETE;
++        }
++
+ 	if (dbwrap_transaction_start(regdb) != 0) {
+ 		return WERR_REG_IO_FAILURE;
+ 	}
+@@ -851,7 +870,7 @@
+ 	become_root();
+ 
+ 	regdb = db_open(NULL, state_path("registry.tdb"), 0,
+-			REG_TDB_FLAGS, O_RDWR, 0600,
++			REG_TDB_FLAGS, regdb_readonly ? O_RDONLY : O_RDWR, 0644,
+ 			DBWRAP_LOCK_ORDER_1);
+ 	if ( !regdb ) {
+ 		result = ntstatus_to_werror( map_nt_error_from_unix( errno ) );
+@@ -891,6 +910,11 @@
+ 	return 0;
+ }
+ 
++bool regdb_is_readonly (void)
++{
++    return regdb_readonly;
++}
++
+ WERROR regdb_transaction_start(void)
+ {
+ 	return (dbwrap_transaction_start(regdb) == 0) ?
