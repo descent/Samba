@@ -97,6 +97,9 @@ if [ ! -d $SAMBA ]; then
 
     export PATH=$SAMBA/bin/default/source4/heimdal_build/:$PATH
     export LD_LIBRARY_PATH=$PYTHON_OBJ/lib/:$LD_LIBRARY_PATH
+
+    # Following prefix indicate the default install folder to where for embedded system.
+    # Because "make install" will install the folder which user like.
     CC=arm-linux-gnueabihf-gcc-4.8.5 \
         AR=arm-linux-gnueabihf-ar \
         CPP=arm-linux-gnueabihf-cpp \
@@ -107,6 +110,7 @@ if [ ! -d $SAMBA ]; then
         python_LIBDIR="$PYTHON_OBJ/lib/" \
         ./buildtools/bin/waf \
         configure \
+        --prefix=/tmp \
         --cross-compile \
         --cross-answers=arm.txt \
         --hostcc=gcc \
