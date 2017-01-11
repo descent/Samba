@@ -107,7 +107,6 @@ if [ ! -d $SAMBA ]; then
         python_LIBDIR="$PYTHON_OBJ/lib/" \
         ./buildtools/bin/waf \
         configure \
-        --prefix=$SAMBA_OBJ/ \
         --cross-compile \
         --cross-answers=arm.txt \
         --hostcc=gcc \
@@ -125,6 +124,7 @@ if [ ! -d $SAMBA ]; then
         --bundled-libraries=talloc,pytalloc-util,tdb,tevent,ldb \
 
     make
-    make install
+    # Install binary and libray must indicate the location. Because I dont use prefix at configure.
+    make install DESTDIR=$SAMBA_OBJ
 fi
 
